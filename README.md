@@ -183,90 +183,21 @@ For projects with multiple environments (e.g., dev, uat, prod1, prod2), it's imp
 
 ## Automating Versioning and Release Tagging (Production-Grade)
 
-Manual version updates can be error-prone and time-consuming. For production-grade applications, you can automate version management and release tagging using tools and GitHub Actions.
+For production-grade applications, you can use manual version management and release tagging, or explore advanced tools as your workflow matures.
 
-### **Recommended Tools**
+### **Manual Versioning (Recommended for Simplicity)**
+- Update the `VERSION` file manually before each release.
+- Tag releases for each environment as described above (e.g., `v0.2.0-dev`, `v0.2.0-uat`).
+- Document changes in a `CHANGELOG.md` or in GitHub Releases.
 
-1. **bump2version**
-   - A Python tool to automatically bump the version in your `VERSION` file (and optionally in your code, setup files, etc.), commit the change, and create a git tag.
-   - [bump2version documentation](https://github.com/c4urself/bump2version)
-
-2. **python-semantic-release**
-   - Automates versioning and changelog generation based on commit messages (using [Conventional Commits](https://www.conventionalcommits.org/)).
-   - Can automatically create releases and publish to PyPI.
-   - [python-semantic-release documentation](https://python-semantic-release.readthedocs.io/en/latest/)
-
-### **How to Set Up Automated Versioning**
-
-#### **A. Using bump2version**
-
-1. **Install bump2version**
-   ```sh
-   pip install bump2version
-   ```
-2. **Add a .bumpversion.cfg file** to your project root:
-   ```ini
-   [bumpversion]
-   current_version = 0.2.0
-   commit = True
-   tag = True
-   
-   [bumpversion:file:VERSION]
-   ```
-3. **Bump the version automatically:**
-   - For a patch release:
-     ```sh
-     bump2version patch
-     ```
-   - For a minor release:
-     ```sh
-     bump2version minor
-     ```
-   - For a major release:
-     ```sh
-     bump2version major
-     ```
-   This updates the `VERSION` file, commits, and tags the new version.
-
-4. **Integrate with GitHub Actions:**
-   - Add a workflow step to run bump2version (optionally on merge to main or on release PRs).
-   - You can use [github-actions-bump-version](https://github.com/marketplace/actions/github-bump-version) for a no-install solution.
-
-#### **B. Using python-semantic-release**
-
-1. **Install python-semantic-release**
-   ```sh
-   pip install python-semantic-release
-   ```
-2. **Configure in pyproject.toml or .releaserc**
-3. **Write Conventional Commits** in your PRs (e.g., `feat: add login endpoint`, `fix: correct typo in API`).
-4. **Add a GitHub Actions workflow** to run semantic-release on push to main or on release PRs. This will:
-   - Analyze commit messages
-   - Bump the version
-   - Update changelog
-   - Tag the release
-   - Optionally create a GitHub Release and publish to PyPI
-
-### **Best Practices for Automated Versioning**
-- Use automated tools to ensure consistency and avoid human error.
-- Enforce commit message conventions (e.g., Conventional Commits) for semantic versioning.
-- Automate changelog generation for transparency.
-- Protect your main/release branches and require PRs for all changes.
-
-### **Example: Automated Version Bump in GitHub Actions**
-
-Add this to your workflow (for bump2version):
-```yaml
-- name: Bump version and tag
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  run: |
-    pip install bump2version
-    bump2version patch  # or minor/major
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+### **Advanced Automation (Optional)**
+- Tools like `bump2version` or `python-semantic-release` can automate versioning, but require additional setup and careful configuration.
+- If you want to explore these, see their documentation:
+  - [bump2version](https://github.com/c4urself/bump2version)
+  - [python-semantic-release](https://python-semantic-release.readthedocs.io/en/latest/)
+- For most teams, manual versioning with clear tagging and documentation is sufficient and reliable.
 
 ### **Summary**
-- Use tools like bump2version or python-semantic-release to automate versioning.
-- Integrate these tools into your CI/CD workflows.
-- This ensures every release is versioned, tagged, and documented automatically, making your process production-grade and audit-friendly. 
+- Update the `VERSION` file and create tags manually for each release.
+- Use GitHub Releases and changelogs for tracking.
+- Consider automation only if your workflow requires it and your team is comfortable with the tools. 
